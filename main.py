@@ -1,3 +1,5 @@
+#!/usr/bin/venstar-tracking/venv/bin/python3
+
 import requests
 from dotenv import load_dotenv, set_key, find_dotenv
 import os
