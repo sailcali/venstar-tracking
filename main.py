@@ -3,7 +3,6 @@
 import requests
 from dotenv import load_dotenv, set_key, find_dotenv
 import os
-import sys
 import time
 import pandas as pd
 import smtplib, ssl
@@ -18,10 +17,14 @@ load_dotenv(DOTENV_FILE)
 IP = os.environ.get("VENSTAR_IP")
 SENSOR_URL = 'http://' + IP + '/query/sensors'
 DB_STRING = os.environ.get('DB_STRING')
-# sys.setrecursionlimit(5)
+DHT_TRIES = 6
 
 def get_pi_details():
     """Access the onboard sensor and return temp and humidity"""
+    global DHT_TRIES
+    DHT_TRIES -= 1
+    if DHT_TRIES == 0:
+        return None, None
     sensor = dht.DHT22(D4)
     try:
         farenheight = sensor.temperature * (9 / 5) + 32
@@ -29,7 +32,6 @@ def get_pi_details():
     except RuntimeError:
         time.sleep(2)
         get_pi_details()
-    return None, None
 
 def send_battery_notification(level):
     """If battery is below 50%, send an email to myself to replace"""
