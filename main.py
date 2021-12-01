@@ -18,7 +18,7 @@ load_dotenv(DOTENV_FILE)
 IP = os.environ.get("VENSTAR_IP")
 SENSOR_URL = 'http://' + IP + '/query/sensors'
 DB_STRING = os.environ.get('DB_STRING')
-sys.setrecursionlimit(5)
+# sys.setrecursionlimit(5)
 
 def get_pi_details():
     """Access the onboard sensor and return temp and humidity"""
