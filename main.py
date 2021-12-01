@@ -28,9 +28,12 @@ def get_pi_details():
     sensor = dht.DHT22(D4)
     try:
         farenheight = sensor.temperature * (9 / 5) + 32
-        return farenheight, sensor.humidity
+        hum = sensor.humidity
+        sensor.exit()
+        return farenheight, hum
     except RuntimeError:
         time.sleep(2)
+        sensor.exit()
         get_pi_details()
 
 def send_battery_notification(level):
