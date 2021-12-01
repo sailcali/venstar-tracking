@@ -31,7 +31,7 @@ def get_pi_details():
         hum = sensor.humidity
         sensor.exit()
         return farenheight, hum
-    except RuntimeError:
+    except Exception:
         time.sleep(2)
         sensor.exit()
         get_pi_details()
