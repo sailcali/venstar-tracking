@@ -16,6 +16,7 @@ DOTENV_FILE = find_dotenv()
 load_dotenv(DOTENV_FILE)
 IP = os.environ.get("VENSTAR_IP")
 SENSOR_URL = 'http://' + IP + '/query/sensors'
+RUNTIMES_URL = 'http://' + IP + '/query/runtimes'
 DB_STRING = os.environ.get('DB_STRING')
 DHT_TRIES = 6
 
@@ -76,16 +77,22 @@ def create_dataframe():
             data['remote_temp'] = [sensor['temp'],]
         elif sensor['name'] == 'Thermostat':
             data['local_temp'] = [sensor['temp'],]
-
+    data['cool_runtime'] = runtimes_data['runtimes'][-1]['cool1']
+    data['heat_runtime'] = runtimes_data['runtimes'][-1]['heat1']
     df = pd.DataFrame(data)
     df.set_index(['time'], inplace=True)
     return df
+
 
 if __name__ == '__main__':
     # Get sensor data from thermostat API
     sensors = requests.get(SENSOR_URL)
     sensor_data = sensors.json()
     
+    # Get runtimes data from thermostat API
+    runtimes = requests.get(RUNTIMES_URL)
+    runtimes_data = runtimes.json()
+
     # Check the battery level and send email if its low
     if sensor_data['sensors'][2]['battery'] < 60:
         send_battery_notification(sensor_data['sensors'][2]['battery'])
@@ -95,7 +102,7 @@ if __name__ == '__main__':
 
     # Open database engine
     db = create_engine(DB_STRING)
-    
+
     # Create dataframe from sensor data
     df = create_dataframe()
 
