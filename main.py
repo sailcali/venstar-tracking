@@ -18,6 +18,7 @@ IP = os.environ.get("VENSTAR_IP")
 SENSOR_URL = 'http://' + IP + '/query/sensors'
 RUNTIMES_URL = 'http://' + IP + '/query/runtimes'
 DB_STRING = os.environ.get('DB_STRING')
+test = 1
 
 def get_pi_details():
     """Access the onboard sensor and return temp and humidity"""
