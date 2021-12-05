@@ -17,24 +17,23 @@ load_dotenv(DOTENV_FILE)
 IP = os.environ.get("VENSTAR_IP")
 SENSOR_URL = 'http://' + IP + '/query/sensors'
 DB_STRING = os.environ.get('DB_STRING')
-DHT_TRIES = 6
 
 def get_pi_details():
     """Access the onboard sensor and return temp and humidity"""
-    global DHT_TRIES
-    DHT_TRIES -= 1
-    if DHT_TRIES == 0:
-        return None, None
-    sensor = dht.DHT22(D4)
-    try:
-        farenheight = sensor.temperature * (9 / 5) + 32
-        hum = sensor.humidity
-        sensor.exit()
-        return farenheight, hum
-    except Exception:
-        time.sleep(2)
-        sensor.exit()
-        get_pi_details()
+    
+    DHT_TRIES = 6
+    while DHT_TRIES > 0:
+        sensor = dht.DHT22(D4)
+        try:
+            farenheight = sensor.temperature * (9 / 5) + 32
+            hum = sensor.humidity
+            sensor.exit()
+            return farenheight, hum
+        except Exception:
+            time.sleep(2)
+            sensor.exit()
+            DHT_TRIES -= 1
+    return None, None
 
 def send_battery_notification(level):
     """If battery is below 50%, send an email to myself to replace"""
@@ -69,8 +68,10 @@ def send_battery_notification(level):
 def create_dataframe():
     """Esablish data to add to database"""
     data = {'time': [datetime.today(),]}
-    data['pi_temp'] = pi_temp
-    data['humidity'] = humidity
+    if pi_temp != None:
+        data['pi_temp'] = pi_temp
+    if humidity != None:
+        data['humidity'] = humidity
     for sensor in sensor_data['sensors']:
         if sensor['name'] == 'Remote':
             data['remote_temp'] = [sensor['temp'],]
