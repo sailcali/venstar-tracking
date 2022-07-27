@@ -88,20 +88,21 @@ def create_dataframe():
 
 if __name__ == '__main__':
     # Get sensor data from thermostat API
-    sensors = requests.get(SENSOR_URL)
-    sensor_data = sensors.json()
+    #sensors = requests.get(SENSOR_URL)
+    #sensor_data = sensors.json()
     
     # Get runtimes data from thermostat API
-    runtimes = requests.get(RUNTIMES_URL)
-    runtimes_data = runtimes.json()
+    #runtimes = requests.get(RUNTIMES_URL)
+    #runtimes_data = runtimes.json()
 
     # Check the battery level and send email if its low
     #if sensor_data['sensors'][2]['battery'] < 60:
     #    send_battery_notification(sensor_data['sensors'][2]['battery'])
     
     # Get the temp and humidity from the pi
-    pi_temp, humidity = get_pi_details()
-
+    #pi_temp, humidity = get_pi_details()
+    print(get_pi_details())
+    quit()
     # Open database engine
     db = create_engine(DB_STRING)
 
